@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, Code2, Coins, LogOut, Menu, Package, ShoppingBag, Star, Trophy, User, Zap } from "lucide-react";
+import { ChevronDown, Code2, Coins, Globe, LogOut, Menu, Package, ShoppingBag, Star, Trophy, User, Zap } from "lucide-react";
 import useAuthStore from "@/store/authStore";
 import useLangStore from "@/store/langStore";
 import { useAuth } from "@/hooks/useAuth";
@@ -49,14 +49,28 @@ export default function Navbar({ onMenuToggle }) {
 
       <div className="flex items-center gap-2 sm:gap-3">
         {/* Language toggle */}
-        <button
+        <motion.button
           onClick={toggle}
-          className="flex items-center gap-1 px-2 sm:px-3 py-1.5 rounded-full text-xs sm:text-sm font-bold transition-all duration-200 hover:scale-105"
-          style={{ background: "rgba(124,58,237,0.15)", border: "1px solid rgba(124,58,237,0.3)", color: "#a855f7" }}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className="relative flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold overflow-hidden"
+          style={{ background: "rgba(124,58,237,0.12)", border: "1px solid rgba(124,58,237,0.35)", color: "#c084fc" }}
           title="Switch language"
         >
-          {lang === "en" ? "🇷🇺 RU" : "🇬🇧 EN"}
-        </button>
+          <Globe size={13} className="shrink-0" />
+          <AnimatePresence mode="wait">
+            <motion.span
+              key={lang}
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 8 }}
+              transition={{ duration: 0.15 }}
+              className="font-bold tracking-wide"
+            >
+              {lang === "en" ? "RU" : "EN"}
+            </motion.span>
+          </AnimatePresence>
+        </motion.button>
 
         {/* Coins (hidden on xs) */}
         <div
