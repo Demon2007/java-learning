@@ -17,7 +17,9 @@ export function useAuth() {
       navigate("/dashboard");
       return { success: true };
     } catch (err) {
-      const message = err.response?.data?.message || "Login failed. Check your credentials.";
+      const message = !err.response
+        ? "Cannot connect to server. Please try again."
+        : err.response?.data?.message || "Login failed. Check your credentials.";
       toast.error(message);
       return { success: false, message };
     }
@@ -33,15 +35,18 @@ export function useAuth() {
       navigate("/dashboard");
       return { success: true };
     } catch (err) {
+      if (!err.response) {
+        toast.error("Cannot connect to server. Please try again in a moment.");
+        return { success: false, errors: {} };
+      }
       const errors = err.response?.data?.errors || {};
-      // Set inline errors on the form fields if setFormError is provided
       if (setFormError && Object.keys(errors).length > 0) {
         Object.entries(errors).forEach(([field, messages]) => {
           const msg = Array.isArray(messages) ? messages[0] : messages;
           setFormError(field, { type: "server", message: msg });
         });
       } else {
-        const message = Object.values(errors).flat().join(" ") || "Registration failed.";
+        const message = Object.values(errors).flat().join(" ") || err.response?.data?.message || "Registration failed.";
         toast.error(message);
       }
       return { success: false, errors };
